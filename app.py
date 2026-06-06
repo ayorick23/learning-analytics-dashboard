@@ -87,7 +87,8 @@ with st.sidebar:
     cursos_disponibles = ["Todos"] + sorted(fact['Curso'].dropna().unique().tolist())
     curso_sel = st.selectbox("📚 Curso", cursos_disponibles)
 
-    fecha_asign = ["Todos"] + sorted(fact['Fecha asignación'].dropna().unique().strftime('%d/%m/%Y').tolist())
+    fechas_ordenadas = sorted(pd.to_datetime(fact['Fecha asignación'], errors='coerce').dropna().unique())
+    fecha_asign = ["Todos"] + [fecha.strftime('%d/%m/%Y') for fecha in fechas_ordenadas]
     fecha_sel = st.selectbox("📅 Fecha de Asignación", fecha_asign)
 
     st.markdown("---")
