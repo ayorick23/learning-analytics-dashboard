@@ -87,9 +87,25 @@ with st.sidebar:
     cursos_disponibles = ["Todos"] + sorted(fact['Curso'].dropna().unique().tolist())
     curso_sel = st.selectbox("📚 Curso", cursos_disponibles)
 
-    fechas_ordenadas = sorted(pd.to_datetime(fact['Fecha asignación'], errors='coerce').dropna().unique())
-    fecha_asign = ["Todos"] + [fecha.strftime('%d/%m/%Y') for fecha in fechas_ordenadas]
-    fecha_sel = st.selectbox("📅 Fecha de Asignación", fecha_asign)
+    #fechas_ordenadas = sorted(pd.to_datetime(fact['Fecha asignación'], errors='coerce').dropna().unique())
+    #fecha_asign = ["Todos"] + [fecha.strftime('%d/%m/%Y') for fecha in fechas_ordenadas]
+    #fecha_sel = st.selectbox("📅 Fecha de Asignación", fecha_asign)
+    fechas_ordenadas = sorted(
+        pd.to_datetime(
+            fact['Fecha asignación'],
+            errors='coerce'
+        ).dropna().unique()
+    )
+
+    fecha_options = [None] + list(fechas_ordenadas)
+
+    fecha_sel = st.selectbox(
+        "📅 Fecha de Asignación",
+        fecha_options,
+        format_func=lambda x:
+            "Todos" if x is None
+            else pd.Timestamp(x).strftime("%d/%m/%Y")
+    )
 
     st.markdown("---")
     st.markdown("**Última actualización:**")
@@ -105,8 +121,15 @@ if sucursal_sel != "Todos":
     df = df[df['Sucursal'] == sucursal_sel]
 if curso_sel != "Todos":
     df = df[df['Curso'] == curso_sel]
-if fecha_sel != "Todos":
-    df = df[df['Fecha asignación'] == fecha_sel]
+#if fecha_sel != "Todos":
+#    fecha_filtro = pd.to_datetime(fecha_sel, format='%d/%m/%Y')
+#    df = df[df['Fecha asignación'].dt.normalize == fecha_filtro.normalize()]
+if fecha_sel is not None:
+    df = df[
+        df['Fecha asignación'].dt.normalize()
+        ==
+        pd.Timestamp(fecha_sel).normalize()
+    ]
 
 # ── Header ─────────────────────────────────────────────────────────────────────
 titulo = f"Sucursal: {sucursal_sel}" if sucursal_sel != "Todos" else (f"Distrito: {distrito_sel}" if distrito_sel != "Todos" else "Vista General – Todas las Sucursales")
