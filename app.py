@@ -145,7 +145,7 @@ desaprobados = (df['Estado Aprobación'] == 'Desaprobado').sum()
 en_progreso = (df['Estado Aprobación'] == 'En progreso').sum()
 pct_aprobados = round(aprobados / total * 100, 1) if total else 0
 pct_incump = round(no_cumplen / total * 100, 1) if total else 0
-nota_prom = df[df['Evaluación Final - Nota'] > 0]['Evaluación Final - Nota'].mean()
+nota_prom = df['Evaluación Final - Nota'].mean()
 nota_prom = round(nota_prom, 1) if not np.isnan(nota_prom) else 0
 delta_prom = df[df['Delta Puntaje'] != 0]['Delta Puntaje'].mean()
 delta_prom = round(delta_prom, 1) if not np.isnan(delta_prom) else 0
